@@ -20,9 +20,21 @@ private:
 	std::string filename;  ///<summary>Filename. Used for errors with opening files</summary>
 public:
 	Error(ErrorType type, int Occuerenceline);
+	ErrorType getErrorType() const;
 	void setAllowedRange(Range range);
 	void setFilename(std::string name);
+
+	bool operator==(const Error& right) const;
 };
+
+namespace std {
+	template <>
+	struct hash<Error> {
+		std::size_t operator()(const Error& e) const noexcept {
+			 return std::hash<int>{}(static_cast<int>(e.getErrorType()));
+		}
+	};
+}
 
 /// <summary>
 /// Describes result of operation
@@ -37,6 +49,11 @@ private:
 	std::unordered_set<Error> errors;   ///<summary>List of errors if it was unsuccessful</summary>
 
 public:
-	void addError(Error error);         ///<summary>Add error to list of errors</summary>
+	bool isSuccess();
 	void setValue(T val);
+	T getValue();
+	void addError(Error error);         ///<summary>Add error to list of errors</summary>
+
+	bool operator==(const Result& right) const;
 };
+

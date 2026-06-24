@@ -41,7 +41,7 @@
     <ClInclude Include="IOModule.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="Uitls.h">
+    <ClInclude Include="Utils.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="Ranges.h">

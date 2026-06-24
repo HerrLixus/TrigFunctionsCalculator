@@ -15,10 +15,27 @@ private:
 
 public:
 	RangeSegment(double min, bool minIncluded, double max, bool maxIncluded);
+
+	float getMin() const;
+	float getMax() const;
+
+	bool operator==(const RangeSegment& s) const;
 	
 	bool isInside(double x);
 };
 
+
+namespace std {
+	template <>
+	struct hash<RangeSegment> {
+		std::size_t operator()(const RangeSegment& s) const noexcept {
+			// Combine the hashes of individual members
+			std::size_t h1 = std::hash<float>{}(s.getMin());
+			std::size_t h2 = std::hash<float>{}(s.getMax());
+			return h1 ^ (h2 << 1); // Simple bit-shifting combination
+		}
+	};
+}
 
 /// <summary>
 /// Describes collection of continuous ranges
