@@ -127,10 +127,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ErrorHandling.cpp" />
+    <ClCompile Include="IOModule.cpp" />
+    <ClCompile Include="Ranges.cpp" />
     <ClCompile Include="TrigFunctionsCalculator.cpp" />
+    <ClCompile Include="Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ErrorHandling.h" />
+    <ClInclude Include="Ranges.h" />
+    <ClInclude Include="IOModule.h" />
     <ClInclude Include="TrigFunctionsCalculator.h" />
+    <ClInclude Include="Uitls.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
