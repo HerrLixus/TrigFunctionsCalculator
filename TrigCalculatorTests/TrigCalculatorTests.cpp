@@ -13,6 +13,11 @@ namespace Microsoft {
 			inline std::wstring ToString<Result<double>>(const Result<double>& t) {
 				return L"Result<double>";
 			}
+
+			template<>
+			inline std::wstring ToString<Result<std::tuple<Utils::Functions, double, double>>>(const Result<std::tuple<Utils::Functions, double, double>>& t) {
+				return L"Result<std::tuple<Utils::Functions, double, double>>";
+			}
 		}
 	}
 }
@@ -445,5 +450,38 @@ namespace TrigCalculatorTests
 			Assert::AreEqual(res8, Utils::validateInputFormat("exp", "1e-2", "1e-3"), L"Wrong function, Wrong argument, Wrong precision failed");
 
 		}
+	};
+
+	TEST_CLASS(ValidateDoubleTests)
+	{
+		TEST_METHOD(validateDoubleTests)
+		{
+			std::vector<std::tuple<std::string, bool, const wchar_t*>> inputs = 
+			{
+				{"",					false, L"Пустая строка"},
+				{"12345",				true,  L"Одни цифры"},
+				{".14",					true,  L"Точка в начале"},
+				{"14.",					true,  L"Точка в конце"},
+				{"1.4",					true,  L"Точка в середине"},
+				{"1.4.3",				false, L"Две точки"},
+				{"abcdef",				false, L"Только буквы"},
+				{"123abc",				false, L"Буквы и цифры"},
+				{"1.5E5",				false, L"Экспоненциальная запись"},
+				{"1.12345678910111213", false, L"Слишком длинная запись"},
+				{"1,4",					false, L"Десятичная запятая"},
+
+			};
+
+			for (int i = 0; i < inputs.size(); i++)
+			{
+				const wchar_t* message;
+				std::string input;
+				bool expected;
+				std::tie(input, expected, message) = inputs[i];
+
+				Assert::AreEqual(expected, Utils::validateDouble(input), message);
+			}
+		}
+
 	};
 }
