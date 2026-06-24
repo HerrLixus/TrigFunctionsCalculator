@@ -51,7 +51,7 @@ private:
 public:
 	bool isSuccess();
 	void setValue(T val);
-	T getValue();
+	T getValue() const;
 	void addError(Error error);         ///<summary>Add error to list of errors</summary>
 
 	bool operator==(const Result& right) const;

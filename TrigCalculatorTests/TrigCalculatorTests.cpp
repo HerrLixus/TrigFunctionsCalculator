@@ -400,4 +400,50 @@ namespace TrigCalculatorTests
 			testEvaluation(inputs);
 		}
 	};
+
+	TEST_CLASS(ValidateInputFormatTests)
+	{
+		TEST_METHOD(validateInputFormatTests)
+		{
+			Result<std::tuple<Utils::Functions, double, double>> res1 = Result<std::tuple<Utils::Functions, double, double>>();
+			res1.setValue(std::tuple(Utils::Cos, 0.7071, 0.001));
+
+
+			Result<std::tuple<Utils::Functions, double, double>> res2 = Result<std::tuple<Utils::Functions, double, double>>();
+			res2.addError(Error(WrongPrecisionFormat, -1));
+
+			Result<std::tuple<Utils::Functions, double, double>> res3 = Result<std::tuple<Utils::Functions, double, double>>();
+			res3.addError(Error(WrongArgFormat, -1));
+
+			Result<std::tuple<Utils::Functions, double, double>> res4 = Result<std::tuple<Utils::Functions, double, double>>();
+			res4.addError(Error(WrongArgFormat, -1));
+			res4.addError(Error(WrongPrecisionFormat, -1));
+
+			Result<std::tuple<Utils::Functions, double, double>> res5 = Result<std::tuple<Utils::Functions, double, double>>();
+			res5.addError(Error(WrongFuncIdentifier, -1));
+
+			Result<std::tuple<Utils::Functions, double, double>> res6 = Result<std::tuple<Utils::Functions, double, double>>();
+			res6.addError(Error(WrongFuncIdentifier, -1));
+			res6.addError(Error(WrongPrecisionFormat, -1));
+
+			Result<std::tuple<Utils::Functions, double, double>> res7 = Result<std::tuple<Utils::Functions, double, double>>();
+			res7.addError(Error(WrongFuncIdentifier, -1));
+			res7.addError(Error(WrongArgFormat, -1));
+
+			Result<std::tuple<Utils::Functions, double, double>> res8 = Result<std::tuple<Utils::Functions, double, double>>();
+			res8.addError(Error(WrongFuncIdentifier, -1));
+			res8.addError(Error(WrongArgFormat, -1));
+			res8.addError(Error(WrongPrecisionFormat, -1));
+
+			Assert::AreEqual(res1, Utils::validateInputFormat("cos", "0.7071", "0.001"), L"Correct function, Correct argument, Correct precision failed");
+			Assert::AreEqual(res2, Utils::validateInputFormat("cos", "0.7071", "1e-3"), L"Correct function, Correct argument, Wrong precision failed");
+			Assert::AreEqual(res3, Utils::validateInputFormat("cos", "1e-2", "0.001"), L"Correct function, Wrong argument, Correct precision failed");
+			Assert::AreEqual(res4, Utils::validateInputFormat("cos", "1e-2", "1e-3"), L"Correct function, Wrong argument, Wrong precision failed");
+			Assert::AreEqual(res5, Utils::validateInputFormat("exp", "0.7071", "0.001"), L"Wrong function, Correct argument, Correct precision failed");
+			Assert::AreEqual(res6, Utils::validateInputFormat("exp", "0.7071", "1e-3"), L"Wrong function, Correct argument, Wrong precision failed");
+			Assert::AreEqual(res7, Utils::validateInputFormat("exp", "1e-2", "0.001"), L"Wrong function, Wrong argument, Correct precision failed");
+			Assert::AreEqual(res8, Utils::validateInputFormat("exp", "1e-2", "1e-3"), L"Wrong function, Wrong argument, Wrong precision failed");
+
+		}
+	};
 }
