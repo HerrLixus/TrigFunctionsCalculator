@@ -76,6 +76,7 @@ template<typename T>
 Result<T>::Result()
 {
 	success = true;
+	errors = std::unordered_set<Error>();
 }
 
 template<typename T>

@@ -5,11 +5,14 @@
 #include <ctime>
 #include <sstream>
 #include <unordered_map>
+#include <memory>
 
 #include "Utils.h"
+#include "Calculator.h"
 
 namespace Utils
 {
+	
 
 	Result<std::ifstream> openInFile(const std::string& filename)
 	{
@@ -95,19 +98,19 @@ namespace Utils
 
 		std::unordered_map<std::string, Functions> funcIds =
 		{
-			{"cos", Functions::Cos},
-			{"sin", Functions::Sin},
-			{"tan", Functions::Tan},
-			{"cot", Functions::Cot},
-			{"sec", Functions::Sec},
-			{"csc", Functions::Csc},
+			{"cos", Functions::COS},
+			{"sin", Functions::SIN},
+			{"tan", Functions::TAN},
+			{"cot", Functions::COT},
+			{"sec", Functions::SEC},
+			{"csc", Functions::CSC},
 
-			{"arccos", Functions::Arccos},
-			{"arcsin", Functions::Arcsin},
-			{"arctan", Functions::Arctan},
-			{"arccot", Functions::Arccot},
-			{"arcsec", Functions::Arcsec},
-			{"arccsc", Functions::Arccsc}
+			{"arccos", Functions::ARCCOS},
+			{"arcsin", Functions::ARCSIN},
+			{"arctan", Functions::ARCTAN},
+			{"arccot", Functions::ARCCOT},
+			{"arcsec", Functions::ARCSEC},
+			{"arccsc", Functions::ARCCSC}
 		};
 
 		Functions func;
@@ -157,8 +160,23 @@ namespace Utils
 
 	Result<double> evaluate(Functions name, const double x, const double precision)
 	{
-		Result<double> res;
-		res.setValue(0.0);
-		return res;
+		std::unordered_map<Functions, std::unique_ptr<Evaluator>> funcs;
+
+		funcs[Functions::SIN] = std::move(std::make_unique<Sin>());
+		funcs[Functions::COS] = std::move(std::make_unique<Cos>());
+		funcs[Functions::TAN] = std::move(std::make_unique<Tan>());
+		funcs[Functions::COT] = std::move(std::make_unique<Cot>());
+		funcs[Functions::SEC] = std::move(std::make_unique<Sec>());
+		funcs[Functions::CSC] = std::move(std::make_unique<Csc>());
+
+		funcs[Functions::ARCSIN] = std::move(std::make_unique<Arcsin>());
+		funcs[Functions::ARCCOS] = std::move(std::make_unique<Arccos>());
+		funcs[Functions::ARCTAN] = std::move(std::make_unique<Arctan>());
+		funcs[Functions::ARCCOT] = std::move(std::make_unique<Arccot>());
+		funcs[Functions::ARCSEC] = std::move(std::make_unique<Arcsec>());
+		funcs[Functions::ARCCSC] = std::move(std::make_unique<Arccsc>());
+		
+
+		return funcs[name]->evaluate(x, precision);
 	}
 }

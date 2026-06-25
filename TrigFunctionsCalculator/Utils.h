@@ -1,15 +1,9 @@
 #pragma once
 #include "ErrorHandling.h"
-
+#include "Calculator.h"
 
 namespace Utils
 {
-	/// <summary>
-	/// Available trigonometric functions
-	/// </summary>
-	enum Functions { Sin, Cos, Tan, Cot, Sec, Csc, Arcsin, Arccos, Arctan, Arccot, Arcsec, Arccsc };
-
-
 	Result<std::tuple<std::ifstream, std::ofstream, std::ofstream>>
 		openIOFiles(const std::string& inputFilename, const std::string& outputFilename);
 
