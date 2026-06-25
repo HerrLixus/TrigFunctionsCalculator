@@ -3,6 +3,56 @@
 #include "Utils.h"
 #include "IOModule.h"
 
+void processInputDataPortion(const ResultPrinter& resultPrinter,
+    const std::string& function, const std::string& arg, const std::string& prec)
+{
+    Result<std::tuple<Functions, double, double>> res =
+        Utils::validateInputFormat(function, arg, prec);
+
+    if (!res.isSuccess())
+    {
+        resultPrinter.printResult(res);
+        return;
+    }
+
+    Functions name;
+    double x;
+    double precision;
+
+    std::tie(name, x, precision) = res.getValue();
+
+    Result<double> result = Utils::evaluate(name, x, precision);
+
+    resultPrinter.printResult(result);
+}
+
+void processInputFile(const ResultPrinter& resultPrinter, std::ifstream inputStream)
+{
+    std::string line;
+    int lineCounter = 0;
+    while (std::getline(inputStream, line))
+    {
+        std::stringstream ss(line);
+        std::vector<std::string> segments;
+        std::string token;
+        while (ss >> token)
+            segments.push_back(token);
+
+        lineCounter++;
+
+        if (segments.size() != 3)
+        {
+            Result<bool> res;
+            res.addError(Error(WrongArgumentCountFile));
+            res.setLine(lineCounter);
+            resultPrinter.printResult(res);
+            continue;
+        }
+
+        processInputDataPortion(resultPrinter, segments[0], segments[1], segments[2]);
+    }
+}
+
 int main(int argc, char* argv[])
 {
     ResultPrinter resultPrinter;
@@ -22,70 +72,12 @@ int main(int argc, char* argv[])
         resultPrinter.setStreams(std::move(std::get<1>(filestreams)), std::move(std::get<2>(filestreams)));
 
         std::ifstream inputstream = std::move(std::get<0>(filestreams));
-        std::string line;
 
-        int lineCounter = 0;
-        while (std::getline(inputstream, line))
-        {
-            std::stringstream ss(line);
-            std::vector<std::string> segments;
-            std::string token;
-            while (ss >> token)
-                segments.push_back(token);
-
-            lineCounter++;
-
-            if (segments.size() != 3)
-            {
-                Result<bool> res;
-                res.addError(Error(WrongArgumentCountFile));
-                res.setLine(lineCounter);
-                resultPrinter.printResult(res);
-                continue;
-            }
-            
-            Result<std::tuple<Functions, double, double>> res =
-                Utils::validateInputFormat(segments[0], segments[1], segments[2]);
-            res.setLine(lineCounter);
-
-            if (!res.isSuccess())
-            {
-                resultPrinter.printResult(res);
-                continue;
-            }
-
-            Functions name;
-            double x;
-            double precision;
-
-            std::tie(name, x, precision) = res.getValue();
-
-            Result<double> result = Utils::evaluate(name, x, precision);
-            result.setLine(lineCounter);
-            
-            resultPrinter.printResult(result);
-        }
+        processInputFile(resultPrinter, std::move(inputstream));
     }
     else if (argc == 4)
     {
-        Result<std::tuple<Functions, double, double>> res =
-            Utils::validateInputFormat(argv[1], argv[2], argv[3]);
-
-        if (!res.isSuccess())
-        {
-            resultPrinter.printResult(res);
-            return 0;
-        }
-
-        Functions name;
-        double x;
-        double precision;
-
-        std::tie(name, x, precision) = res.getValue();
-
-        Result<double> result = Utils::evaluate(name, x, precision);
-
-        resultPrinter.printResult(result);
+        processInputDataPortion(resultPrinter, argv[1], argv[2], argv[3]);
     }
     else
     {
