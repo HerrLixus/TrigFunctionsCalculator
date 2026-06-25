@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <unordered_set>
+#include <fstream>
 #include "Ranges.h"
 
 /// <summary>
@@ -49,11 +50,62 @@ private:
 	std::unordered_set<Error> errors;   ///<summary>List of errors if it was unsuccessful</summary>
 
 public:
-	bool isSuccess();
+	Result();
+	bool isSuccess() const;
 	void setValue(T val);
-	T getValue() const;
+	T& getValue();
 	void addError(Error error);         ///<summary>Add error to list of errors</summary>
+	void expandErrors(const Result& res);
 
 	bool operator==(const Result& right) const;
 };
 
+template<typename T>
+Result<T>::Result()
+{
+	success = true;
+}
+
+template<typename T>
+bool Result<T>::isSuccess() const
+{
+	return success;
+}
+
+template<typename T>
+T& Result<T>::getValue()
+{
+	return value;
+}
+
+template<typename T>
+void Result<T>::setValue(T val)
+{
+	value = std::move(val);
+}
+
+template<typename T>
+void Result<T>::addError(Error error)
+{
+	success = false;
+	errors.insert(error);
+}
+
+template<typename T>
+void Result<T>::expandErrors(const Result& res)
+{
+	success = false;
+	errors.insert(res.errors.cbegin(), res.errors.cend());
+}
+
+template<typename T>
+bool Result<T>::operator==(const Result& right) const
+{
+	if (success != right.success)
+		return false;
+
+	if (success)
+		return value == right.value;
+	else
+		return errors == right.errors;
+}
