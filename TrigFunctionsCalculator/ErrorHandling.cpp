@@ -11,6 +11,21 @@ ErrorType Error::getErrorType() const
 	return errorType;
 }
 
+int Error::getLine() const
+{
+	return line;
+}
+
+Range Error::getRange() const
+{
+	return allowedRange;
+}
+
+std::string Error::getFilename() const
+{
+	return filename;
+}
+
 void Error::setAllowedRange(Range range)
 {
 	allowedRange = range;

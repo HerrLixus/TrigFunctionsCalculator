@@ -1,6 +1,8 @@
 #pragma once
 #include <unordered_set>
+#include <ostream>
 
+class Range;
 
 /// <summary>
 /// Describes continuous segment of real values
@@ -12,6 +14,8 @@ private:
 	bool minIncluded_;    
 	double max_;
 	bool maxIncluded_;
+
+	friend std::ostream& operator<<(std::ostream& os, const Range& range);
 
 public:
 	RangeSegment(double min, bool minIncluded, double max, bool maxIncluded);
@@ -45,10 +49,13 @@ class Range
 private:
 	std::unordered_set<RangeSegment> segments_;
 
+	friend std::ostream& operator<<(std::ostream& os, const Range& range);
+
 public:
 	Range();
 	Range(std::unordered_set<RangeSegment> segments);
 	Range(std::initializer_list<RangeSegment> segments);
 
 	bool isInside(double x) const;
+
 };

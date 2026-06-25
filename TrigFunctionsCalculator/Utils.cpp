@@ -5,8 +5,6 @@
 #include <ctime>
 #include <sstream>
 
-#include <iostream>
-
 #include "Utils.h"
 
 namespace Utils
@@ -20,7 +18,11 @@ namespace Utils
 		if (input.is_open())
 			res.setValue(std::move(input));
 		else
-			res.addError(Error(ErrorType::inFileOpenFail, -1));
+		{
+			Error error(ErrorType::inFileOpenFail, -1);
+			error.setFilename(filename);
+			res.addError(error);
+		}
 
 		return res;
 	}
@@ -33,7 +35,11 @@ namespace Utils
 		if (output.is_open())
 			res.setValue(std::move(output));
 		else
-			res.addError(Error(ErrorType::outFileCreateFail, -1));
+		{
+			Error error(ErrorType::outFileCreateFail, -1);
+			error.setFilename(filename);
+			res.addError(error);
+		}
 
 		return res;
 	}
@@ -45,11 +51,20 @@ namespace Utils
 
 		Result<std::ifstream> input = openInFile(inputFilename);
 		if (!input.isSuccess())
-			res.addError(Error(ErrorType::inFileOpenFail, -1));
+		{
+			Error inputError = Error(ErrorType::inFileOpenFail, -1);
+			inputError.setFilename(inputFilename);
+			res.addError(inputError);
+		}
 
 		Result<std::ofstream> output = openOutFile(outputFilename);
 		if (!output.isSuccess())
-			res.addError(Error(ErrorType::outFileCreateFail, -1));
+		{
+			Error outputError = Error(ErrorType::outFileCreateFail, -1);
+			outputError.setFilename(outputFilename);
+			res.addError(outputError);
+		}
+			
 
 		std::time_t t = std::time(nullptr);
 		std::tm tm;
@@ -58,11 +73,13 @@ namespace Utils
 		std::stringstream ss;
 		ss << std::put_time(&tm, "%d-%m-%Y_%H-%M-%S") << ".txt";
 
-		std::cout << ss.str() << std::endl;
-
 		Result<std::ofstream> logFile = openOutFile(ss.str());
 		if (!logFile.isSuccess())
-			res.addError(Error(ErrorType::logFileCreateFail, -1));
+		{
+			Error logError = Error(ErrorType::logFileCreateFail, -1);
+			logError.setFilename(ss.str());
+			res.addError(logError);
+		}
 
 		res.setValue(std::make_tuple(std::move(input.getValue()), std::move(output.getValue()), std::move(logFile.getValue())));
 

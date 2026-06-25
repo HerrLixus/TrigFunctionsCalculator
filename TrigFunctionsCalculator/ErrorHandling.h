@@ -9,6 +9,7 @@
 /// </summary>
 enum ErrorType { noError, inFileOpenFail, outFileCreateFail, logFileCreateFail, WrongArgumentCountConsole, WrongArgumentCountFile, WrongFuncIdentifier, WrongArgFormat, WrongArgValue, WrongPrecisionFormat, WrongPrecisionValue, CantAchievePrecision };
 
+
 /// <summary>
 /// Contains information abour error
 /// </summary>
@@ -19,9 +20,15 @@ private:
 	int line;              ///<summary>Line where error occurs</summary>
 	Range allowedRange;    ///<summary>Allowed range. Used for range-related errors</summary>
 	std::string filename;  ///<summary>Filename. Used for errors with opening files</summary>
+
 public:
 	Error(ErrorType type, int Occuerenceline);
+
 	ErrorType getErrorType() const;
+	int getLine() const;
+	Range getRange() const;
+	std::string getFilename() const;
+
 	void setAllowedRange(Range range);
 	void setFilename(std::string name);
 
@@ -52,10 +59,15 @@ private:
 public:
 	Result();
 	bool isSuccess() const;
+
 	void setValue(T val);
 	T& getValue();
+
+	const std::unordered_set<Error>& getErrors() const;
 	void addError(Error error);         ///<summary>Add error to list of errors</summary>
 	void expandErrors(const Result& res);
+
+	void setLine(int line);
 
 	bool operator==(const Result& right) const;
 };
@@ -85,6 +97,12 @@ void Result<T>::setValue(T val)
 }
 
 template<typename T>
+const std::unordered_set<Error>& Result<T>::getErrors() const
+{
+	return errors;
+}
+
+template<typename T>
 void Result<T>::addError(Error error)
 {
 	success = false;
@@ -96,6 +114,13 @@ void Result<T>::expandErrors(const Result& res)
 {
 	success = false;
 	errors.insert(res.errors.cbegin(), res.errors.cend());
+}
+
+template<typename T>
+void Result<T>::setLine(int line_)
+{
+	for (auto iter = errors.cbegin(); iter != errors.cend(); iter++)
+		iter->line = line_;
 }
 
 template<typename T>
