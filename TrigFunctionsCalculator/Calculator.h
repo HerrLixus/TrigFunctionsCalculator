@@ -18,8 +18,6 @@ class Evaluator
 private:
 	int maxDepth = 10000;        ///<summary>Maximum number of terms computable</summary>
 
-	static Result<void> validateInput(double x, double precision); ///<summary>Whether function can be computed with those inputs</summary>
-
 protected:
 	double maxValue = 1000.0;    ///<summary>Maximum absolute value before considering infinite</summary>
 
@@ -31,6 +29,7 @@ protected:
 	virtual double termFactor(double x, int n) = 0;                            ///<summary>Ratio between two consecutive series terms</summary>
 
 public:
+	Result<double> validateInput(double x, double precision) const; ///<summary>Whether function can be computed with those inputs</summary>
 	Result<double> evaluate(double x, double precision);
 };
 

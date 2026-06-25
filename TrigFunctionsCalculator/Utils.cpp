@@ -178,6 +178,9 @@ namespace Utils
 		funcs[Functions::ARCSEC] = std::move(std::make_unique<Arcsec>());
 		funcs[Functions::ARCCSC] = std::move(std::make_unique<Arccsc>());
 		
+		Result < double > res = funcs[name]->validateInput(x, precision);
+		if (!res.isSuccess())
+			return res;
 
 		return funcs[name]->evaluate(x, precision);
 	}
