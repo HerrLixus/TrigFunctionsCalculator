@@ -16,12 +16,12 @@ private:
 public:
 	RangeSegment(double min, bool minIncluded, double max, bool maxIncluded);
 
-	float getMin() const;
-	float getMax() const;
+	double getMin() const;
+	double getMax() const;
 
 	bool operator==(const RangeSegment& s) const;
 	
-	bool isInside(double x);
+	bool isInside(double x) const;
 };
 
 
@@ -30,8 +30,8 @@ namespace std {
 	struct hash<RangeSegment> {
 		std::size_t operator()(const RangeSegment& s) const noexcept {
 			// Combine the hashes of individual members
-			std::size_t h1 = std::hash<float>{}(s.getMin());
-			std::size_t h2 = std::hash<float>{}(s.getMax());
+			std::size_t h1 = std::hash<double>{}(s.getMin());
+			std::size_t h2 = std::hash<double>{}(s.getMax());
 			return h1 ^ (h2 << 1); // Simple bit-shifting combination
 		}
 	};
@@ -46,8 +46,9 @@ private:
 	std::unordered_set<RangeSegment> segments_;
 
 public:
+	Range();
 	Range(std::unordered_set<RangeSegment> segments);
-	Range(RangeSegment segments[]);
+	Range(std::initializer_list<RangeSegment> segments);
 
-	bool isInside(double x);
+	bool isInside(double x) const;
 };
