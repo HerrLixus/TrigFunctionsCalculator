@@ -37,10 +37,29 @@ Result<double> Evaluator::evaluate(double x, double precision)
     }
 
     if (!precisionFlag)
-        res.addError(Error(CantAchievePrecision, -1));
+        res.addError(Error(CantAchievePrecision));
 
     return res;
 }
+
+Result<double> Evaluator::validateInput(double x, double precision) const
+{
+    Result<double> res;
+
+    if (!computableRange.isInside(x))
+    {
+        Error error(WrongArgValue);
+        error.setAllowedRange(computableRange);
+        res.addError(error);
+    }
+          
+    if (precision < 1e-10 || precision > 1.0)
+        res.addError(Error(WrongPrecisionValue));
+
+    return res;
+}
+
+
 
 Cos::Cos()
 {
@@ -105,10 +124,10 @@ Tan::Tan()
 Result<double> Tan::fallbackStrategy(double x, double precision)
 {
     Result<double> fail = Result<double>();
-    fail.addError(Error(CantAchievePrecision, -1));
+    fail.addError(Error(CantAchievePrecision));
 
     Result<double> outOfRange;
-    outOfRange.addError(Error(ErrorType::WrongArgValue, -1));
+    outOfRange.addError(Error(ErrorType::WrongArgValue));
 
     Result<double> sinus = Sin().evaluate(x, precision / 4.0);
     Result<double> cosinus = Cos().evaluate(x, precision / 4.0);
@@ -152,10 +171,10 @@ Cot::Cot()
 Result<double> Cot::fallbackStrategy(double x, double precision)
 {
     Result<double> fail = Result<double>();
-    fail.addError(Error(CantAchievePrecision, -1));
+    fail.addError(Error(CantAchievePrecision));
 
     Result<double> outofRange;
-    outofRange.addError(Error(WrongArgValue, -1));
+    outofRange.addError(Error(WrongArgValue));
 
     Result<double> sinus = Sin().evaluate(x, precision / 10.0);
     Result<double> cosinus = Cos().evaluate(x, precision / 10.0);
@@ -197,10 +216,10 @@ Sec::Sec()
 Result<double> Sec::fallbackStrategy(double x, double precision)
 {
     Result<double> fail = Result<double>();
-    fail.addError(Error(CantAchievePrecision, -1));
+    fail.addError(Error(CantAchievePrecision));
 
     Result<double> outofRange;
-    outofRange.addError(Error(WrongArgValue, -1));
+    outofRange.addError(Error(WrongArgValue));
 
     Result<double> cosinus = Cos().evaluate(x, precision / 10.0);
     if (!cosinus.isSuccess())
@@ -241,10 +260,10 @@ Csc::Csc()
 Result<double> Csc::fallbackStrategy(double x, double precision)
 {
     Result<double> fail = Result<double>();
-    fail.addError(Error(CantAchievePrecision, -1));
+    fail.addError(Error(CantAchievePrecision));
 
     Result<double> outofRange;
-    outofRange.addError(Error(WrongArgValue, -1));
+    outofRange.addError(Error(WrongArgValue));
 
     Result<double> sinus = Sin().evaluate(x, precision / 10.0);
     if (!sinus.isSuccess())
@@ -285,7 +304,7 @@ Arcsin::Arcsin()
 Result<double> Arcsin::fallbackStrategy(double x, double precision)
 {
     Result<double> fail = Result<double>();
-    fail.addError(Error(CantAchievePrecision, -1));
+    fail.addError(Error(CantAchievePrecision));
 
     Result<double> res = Arcsin().evaluate(sqrt(1.0-x*x), precision);
     if (!res.isSuccess())
@@ -324,7 +343,7 @@ Arccos::Arccos()
 Result<double> Arccos::fallbackStrategy(double x, double precision)
 {
     Result<double> fail = Result<double>();
-    fail.addError(Error(CantAchievePrecision, -1));
+    fail.addError(Error(CantAchievePrecision));
 
     Result<double> res = Arcsin().evaluate(x, precision);
     if (!res.isSuccess())
@@ -354,7 +373,7 @@ Arctan::Arctan()
 Result<double> Arctan::fallbackStrategy(double x, double precision)
 {
     Result<double> fail = Result<double>();
-    fail.addError(Error(CantAchievePrecision, -1));
+    fail.addError(Error(CantAchievePrecision));
 
 
     Result<double> res = Arctan::evaluate(1.0/x, precision);
@@ -394,7 +413,7 @@ Arccot::Arccot()
 Result<double> Arccot::fallbackStrategy(double x, double precision)
 {
     Result<double> fail = Result<double>();
-    fail.addError(Error(CantAchievePrecision, -1));
+    fail.addError(Error(CantAchievePrecision));
 
 
     Result<double> res = Arctan().evaluate(x, precision);
@@ -423,13 +442,13 @@ Arcsec::Arcsec()
 Result<double> Arcsec::fallbackStrategy(double x, double precision)
 {
     Result<double> outOfRange;
-    outOfRange.addError(Error(ErrorType::WrongArgValue, -1));
+    outOfRange.addError(Error(ErrorType::WrongArgValue));
 
     if (x == 0.0)
         return outOfRange;
 
     Result<double> fail = Result<double>();
-    fail.addError(Error(CantAchievePrecision, -1));
+    fail.addError(Error(CantAchievePrecision));
 
     Result<double> res = Arccos().evaluate(1.0 / x, precision);
     if (!res.isSuccess())
@@ -457,13 +476,13 @@ Arccsc::Arccsc()
 Result<double> Arccsc::fallbackStrategy(double x, double precision)
 {
     Result<double> outOfRange;
-    outOfRange.addError(Error(ErrorType::WrongArgValue, -1));
+    outOfRange.addError(Error(ErrorType::WrongArgValue));
 
     if (x == 0.0)
         return outOfRange;
 
     Result<double> fail = Result<double>();
-    fail.addError(Error(CantAchievePrecision, -1));
+    fail.addError(Error(CantAchievePrecision));
 
     Result<double> res = Arcsin().evaluate(1.0 / x, precision);
     if (!res.isSuccess())

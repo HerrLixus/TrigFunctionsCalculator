@@ -149,7 +149,7 @@ namespace TrigCalculatorTests
 		TEST_METHOD(CotTests)
 		{
 			Result<double> outOfRangeError = Result<double>();
-			outOfRangeError.addError(Error(WrongArgValue, -1));
+			outOfRangeError.addError(Error(WrongArgValue));
 
 			std::vector<std::tuple<Functions, double, double, bool, std::variant<double, Result<double>>>> inputs =
 			{
@@ -212,7 +212,7 @@ namespace TrigCalculatorTests
 		TEST_METHOD(CscTests)
 		{
 			Result<double> outOfRangeError = Result<double>();
-			outOfRangeError.addError(Error(WrongArgValue, -1));
+			outOfRangeError.addError(Error(WrongArgValue));
 
 			std::vector<std::tuple<Functions, double, double, bool, std::variant<double, Result<double>>>> inputs =
 			{
@@ -299,7 +299,7 @@ namespace TrigCalculatorTests
 		TEST_METHOD(ArctanTests)
 		{
 			Result<double> cantComputeError = Result<double>();
-			cantComputeError.addError(Error(CantAchievePrecision, -1));
+			cantComputeError.addError(Error(CantAchievePrecision));
 
 			std::vector<std::tuple<Functions, double, double, bool, std::variant<double, Result<double>>>> inputs =
 			{
@@ -325,7 +325,7 @@ namespace TrigCalculatorTests
 		TEST_METHOD(ArccotTests)
 		{
 			Result<double> cantComputeError = Result<double>();
-			cantComputeError.addError(Error(CantAchievePrecision, -1));
+			cantComputeError.addError(Error(CantAchievePrecision));
 
 			std::vector<std::tuple<Functions, double, double, bool, std::variant<double, Result<double>>>> inputs =
 			{
@@ -351,7 +351,7 @@ namespace TrigCalculatorTests
 		TEST_METHOD(ArcsecTests)
 		{
 			Result<double> outOfRangeError = Result<double>();
-			outOfRangeError.addError(Error(WrongArgValue, -1));
+			outOfRangeError.addError(Error(WrongArgValue));
 
 			std::vector<std::tuple<Functions, double, double, bool, std::variant<double, Result<double>>>> inputs =
 			{
@@ -381,7 +381,7 @@ namespace TrigCalculatorTests
 		TEST_METHOD(ArccscTests)
 		{
 			Result<double> outOfRangeError = Result<double>();
-			outOfRangeError.addError(Error(WrongArgValue, -1));
+			outOfRangeError.addError(Error(WrongArgValue));
 
 			std::vector<std::tuple<Functions, double, double, bool, std::variant<double, Result<double>>>> inputs =
 			{
@@ -418,30 +418,30 @@ namespace TrigCalculatorTests
 
 
 			Result<std::tuple<Functions, double, double>> res2 = Result<std::tuple<Functions, double, double>>();
-			res2.addError(Error(WrongPrecisionFormat, -1));
+			res2.addError(Error(WrongPrecisionFormat));
 
 			Result<std::tuple<Functions, double, double>> res3 = Result<std::tuple<Functions, double, double>>();
-			res3.addError(Error(WrongArgFormat, -1));
+			res3.addError(Error(WrongArgFormat));
 
 			Result<std::tuple<Functions, double, double>> res4 = Result<std::tuple<Functions, double, double>>();
-			res4.addError(Error(WrongArgFormat, -1));
-			res4.addError(Error(WrongPrecisionFormat, -1));
+			res4.addError(Error(WrongArgFormat));
+			res4.addError(Error(WrongPrecisionFormat));
 
 			Result<std::tuple<Functions, double, double>> res5 = Result<std::tuple<Functions, double, double>>();
-			res5.addError(Error(WrongFuncIdentifier, -1));
+			res5.addError(Error(WrongFuncIdentifier));
 
 			Result<std::tuple<Functions, double, double>> res6 = Result<std::tuple<Functions, double, double>>();
-			res6.addError(Error(WrongFuncIdentifier, -1));
-			res6.addError(Error(WrongPrecisionFormat, -1));
+			res6.addError(Error(WrongFuncIdentifier));
+			res6.addError(Error(WrongPrecisionFormat));
 
 			Result<std::tuple<Functions, double, double>> res7 = Result<std::tuple<Functions, double, double>>();
-			res7.addError(Error(WrongFuncIdentifier, -1));
-			res7.addError(Error(WrongArgFormat, -1));
+			res7.addError(Error(WrongFuncIdentifier));
+			res7.addError(Error(WrongArgFormat));
 
 			Result<std::tuple<Functions, double, double>> res8 = Result<std::tuple<Functions, double, double>>();
-			res8.addError(Error(WrongFuncIdentifier, -1));
-			res8.addError(Error(WrongArgFormat, -1));
-			res8.addError(Error(WrongPrecisionFormat, -1));
+			res8.addError(Error(WrongFuncIdentifier));
+			res8.addError(Error(WrongArgFormat));
+			res8.addError(Error(WrongPrecisionFormat));
 
 			Assert::AreEqual(res1, Utils::validateInputFormat("cos", "0.7071", "0.001"), L"Correct function, Correct argument, Correct precision failed");
 			Assert::AreEqual(res2, Utils::validateInputFormat("cos", "0.7071", "1e-3"), L"Correct function, Correct argument, Wrong precision failed");

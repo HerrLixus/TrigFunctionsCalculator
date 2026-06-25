@@ -23,7 +23,7 @@ namespace Utils
 			res.setValue(std::move(input));
 		else
 		{
-			Error error(ErrorType::inFileOpenFail, -1);
+			Error error(ErrorType::inFileOpenFail);
 			error.setFilename(filename);
 			res.addError(error);
 		}
@@ -40,7 +40,7 @@ namespace Utils
 			res.setValue(std::move(output));
 		else
 		{
-			Error error(ErrorType::outFileCreateFail, -1);
+			Error error(ErrorType::outFileCreateFail);
 			error.setFilename(filename);
 			res.addError(error);
 		}
@@ -56,15 +56,17 @@ namespace Utils
 		Result<std::ifstream> input = openInFile(inputFilename);
 		if (!input.isSuccess())
 		{
-			Error inputError = Error(ErrorType::inFileOpenFail, -1);
+			Error inputError = Error(ErrorType::inFileOpenFail);
 			inputError.setFilename(inputFilename);
 			res.addError(inputError);
+
+			return res;
 		}
 
 		Result<std::ofstream> output = openOutFile(outputFilename);
 		if (!output.isSuccess())
 		{
-			Error outputError = Error(ErrorType::outFileCreateFail, -1);
+			Error outputError = Error(ErrorType::outFileCreateFail);
 			outputError.setFilename(outputFilename);
 			res.addError(outputError);
 		}
@@ -80,7 +82,7 @@ namespace Utils
 		Result<std::ofstream> logFile = openOutFile(ss.str());
 		if (!logFile.isSuccess())
 		{
-			Error logError = Error(ErrorType::logFileCreateFail, -1);
+			Error logError = Error(ErrorType::logFileCreateFail);
 			logError.setFilename(ss.str());
 			res.addError(logError);
 		}
@@ -119,17 +121,17 @@ namespace Utils
 
 		auto funcId = funcIds.find(name);
 		if (funcId == funcIds.cend())
-			res.addError(Error(WrongFuncIdentifier, -1));
+			res.addError(Error(WrongFuncIdentifier));
 		else
 			func = funcId->second;
 
 		if (!validateDouble(x))
-			res.addError(Error(WrongArgFormat, -1));
+			res.addError(Error(WrongArgFormat));
 		else
 			arg = std::stod(x);
 
 		if (!validateDouble(precision))
-			res.addError(Error(WrongPrecisionFormat, -1));
+			res.addError(Error(WrongPrecisionFormat));
 		else
 			prec = std::stod(precision);
 

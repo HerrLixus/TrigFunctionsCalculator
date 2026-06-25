@@ -1,9 +1,8 @@
 #include "ErrorHandling.h"
 
-Error::Error(ErrorType type, int occurenceLine)
+Error::Error(ErrorType type)
 {
 	errorType = type;
-	line = occurenceLine;
 }
 
 ErrorType Error::getErrorType() const
@@ -11,10 +10,6 @@ ErrorType Error::getErrorType() const
 	return errorType;
 }
 
-int Error::getLine() const
-{
-	return line;
-}
 
 Range Error::getRange() const
 {

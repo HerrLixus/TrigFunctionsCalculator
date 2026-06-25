@@ -16,16 +16,14 @@ enum ErrorType { noError, inFileOpenFail, outFileCreateFail, logFileCreateFail, 
 class Error
 {
 private:
-	ErrorType errorType;
-	int line;              ///<summary>Line where error occurs</summary>
+	ErrorType errorType;            ///<summary>Line where error occurs</summary>
 	Range allowedRange;    ///<summary>Allowed range. Used for range-related errors</summary>
 	std::string filename;  ///<summary>Filename. Used for errors with opening files</summary>
 
 public:
-	Error(ErrorType type, int Occuerenceline);
+	Error(ErrorType type);
 
 	ErrorType getErrorType() const;
-	int getLine() const;
 	Range getRange() const;
 	std::string getFilename() const;
 
@@ -55,6 +53,7 @@ private:
 	bool success;                       ///<summary>Whether the operation is successful</summary>
 	T value;                            ///<summary>Result of operation if it was successful</summary>
 	std::unordered_set<Error> errors;   ///<summary>List of errors if it was unsuccessful</summary>
+	int line;
 
 public:
 	Result();
@@ -67,6 +66,7 @@ public:
 	void addError(Error error);         ///<summary>Add error to list of errors</summary>
 	void expandErrors(const Result& res);
 
+	int getLine() const;
 	void setLine(int line);
 
 	bool operator==(const Result& right) const;
@@ -118,10 +118,15 @@ void Result<T>::expandErrors(const Result& res)
 }
 
 template<typename T>
+int Result<T>::getLine() const
+{
+	return line;
+}
+
+template<typename T>
 void Result<T>::setLine(int line_)
 {
-	for (auto iter = errors.cbegin(); iter != errors.cend(); iter++)
-		iter->line = line_;
+	line = line_;
 }
 
 template<typename T>

@@ -28,9 +28,6 @@ std::string ResultPrinter::generateErrorMessage(Error error) const
 {
 	std::stringstream buffer;
 
-	if (!isConsole)
-		buffer << "[line: " << error.getLine() << "] ";
-
 	ErrorType errorType = error.getErrorType();
 
 	buffer << errorTexts.at(errorType);
@@ -46,8 +43,9 @@ std::string ResultPrinter::generateErrorMessage(Error error) const
 	return buffer.str();
 }
 
-void ResultPrinter::setStreams(std::ofstream logFile, std::ofstream outputFile)
+void ResultPrinter::setStreams(std::ofstream outputFile, std::ofstream logFile)
 {
+	isConsole = false;
 	logFile_ = std::move(logFile);
 	outputFile_ = std::move(outputFile);
 }

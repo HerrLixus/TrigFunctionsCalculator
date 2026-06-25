@@ -53,15 +53,18 @@ private:
 
 public:
 	ResultPrinter();
-	void setStreams(std::ofstream logFile, std::ofstream outputFile);
+	void setStreams(std::ofstream outputFile, std::ofstream logFile);
 	
 	template <typename T>
-	bool printResult(Result<T> result);
+	bool printResult(Result<T>& result);
 };
 
 template<typename T>
-bool ResultPrinter::printResult(Result<T> result)
+bool ResultPrinter::printResult(Result<T>& result)
 {
+	std::locale::global(std::locale(""));
+	std::cout.imbue(std::locale());
+
 	if (result.isSuccess())
 	{
 		if (isConsole)
@@ -80,7 +83,7 @@ bool ResultPrinter::printResult(Result<T> result)
 			if (isConsole)
 				std::cout << errorText << std::endl;
 			else
-				logFile_ << errorText << std::endl;
+				logFile_ << "[line: " << result.getLine() << "] " << errorText << std::endl;
 		}
 	}
 
