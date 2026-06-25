@@ -56,11 +56,11 @@ public:
 	void setStreams(std::ofstream outputFile, std::ofstream logFile);
 	
 	template <typename T>
-	bool printResult(Result<T>& result) const;
+	bool printResult(Result<T>& result);
 };
 
 template<typename T>
-bool ResultPrinter::printResult(Result<T>& result) const
+bool ResultPrinter::printResult(Result<T>& result)
 {
 	std::locale::global(std::locale(""));
 	std::cout.imbue(std::locale());

@@ -1,13 +1,13 @@
-#include <iostream>
 #include <sstream>
 #include "Utils.h"
 #include "IOModule.h"
 
-void processInputDataPortion(const ResultPrinter& resultPrinter,
-    const std::string& function, const std::string& arg, const std::string& prec)
+void processInputDataPortion(ResultPrinter& resultPrinter,
+    const std::string& function, const std::string& arg, const std::string& prec, int line)
 {
     Result<std::tuple<Functions, double, double>> res =
         Utils::validateInputFormat(function, arg, prec);
+    res.setLine(line);
 
     if (!res.isSuccess())
     {
@@ -22,11 +22,12 @@ void processInputDataPortion(const ResultPrinter& resultPrinter,
     std::tie(name, x, precision) = res.getValue();
 
     Result<double> result = Utils::evaluate(name, x, precision);
+    result.setLine(line);
 
     resultPrinter.printResult(result);
 }
 
-void processInputFile(const ResultPrinter& resultPrinter, std::ifstream inputStream)
+void processInputFile(ResultPrinter& resultPrinter, std::ifstream inputStream)
 {
     std::string line;
     int lineCounter = 0;
@@ -49,7 +50,7 @@ void processInputFile(const ResultPrinter& resultPrinter, std::ifstream inputStr
             continue;
         }
 
-        processInputDataPortion(resultPrinter, segments[0], segments[1], segments[2]);
+        processInputDataPortion(resultPrinter, segments[0], segments[1], segments[2], lineCounter);
     }
 }
 
@@ -77,7 +78,7 @@ int main(int argc, char* argv[])
     }
     else if (argc == 4)
     {
-        processInputDataPortion(resultPrinter, argv[1], argv[2], argv[3]);
+        processInputDataPortion(resultPrinter, argv[1], argv[2], argv[3], -1);
     }
     else
     {

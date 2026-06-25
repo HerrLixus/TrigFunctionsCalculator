@@ -125,6 +125,8 @@ namespace Utils
 		else
 			func = funcId->second;
 
+		std::setlocale(LC_NUMERIC, "C");
+
 		if (!validateDouble(x))
 			res.addError(Error(WrongArgFormat));
 		else
