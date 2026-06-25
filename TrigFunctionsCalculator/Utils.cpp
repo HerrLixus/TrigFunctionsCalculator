@@ -4,6 +4,7 @@
 #include <iomanip>
 #include <ctime>
 #include <sstream>
+#include <unordered_map>
 
 #include "Utils.h"
 
@@ -83,6 +84,81 @@ namespace Utils
 
 		res.setValue(std::make_tuple(std::move(input.getValue()), std::move(output.getValue()), std::move(logFile.getValue())));
 
+		return res;
+	}
+
+
+	Result<std::tuple<Functions, double, double>>
+		validateInputFormat(const std::string& name, const std::string& x, const std::string& precision)
+	{
+		Result<std::tuple<Functions, double, double>> res;
+
+		std::unordered_map<std::string, Functions> funcIds =
+		{
+			{"cos", Functions::Cos},
+			{"sin", Functions::Sin},
+			{"tan", Functions::Tan},
+			{"cot", Functions::Cot},
+			{"sec", Functions::Sec},
+			{"csc", Functions::Csc},
+
+			{"arccos", Functions::Arccos},
+			{"arcsin", Functions::Arcsin},
+			{"arctan", Functions::Arctan},
+			{"arccot", Functions::Arccot},
+			{"arcsec", Functions::Arcsec},
+			{"arccsc", Functions::Arccsc}
+		};
+
+		Functions func;
+		double arg;
+		double prec;
+
+		auto funcId = funcIds.find(name);
+		if (funcId == funcIds.cend())
+			res.addError(Error(WrongFuncIdentifier, -1));
+		else
+			func = funcId->second;
+
+		if (!validateDouble(x))
+			res.addError(Error(WrongArgFormat, -1));
+		else
+			arg = std::stod(x);
+
+		if (!validateDouble(precision))
+			res.addError(Error(WrongPrecisionFormat, -1));
+		else
+			prec = std::stod(precision);
+
+		res.setValue(std::make_tuple(func, arg, prec));
+		return res;
+	}
+
+	bool validateDouble(const std::string& number)
+	{
+		if (number.empty())
+			return false;
+		if (number.size() > 15)
+			return false;
+
+		int dotFlag = false;
+		for (int i = 0; i < number.size(); i++)
+		{
+			if (number[i] == '.')
+			{
+				if (dotFlag) return false;
+				dotFlag = true;
+			}
+			else if (!isdigit(number[i])) return false;
+		}
+
+		return true;
+	}
+
+	Result<double> evaluate(Functions name, const double x, const double precision)
+	{
+		Result<double> res;
+		res.setValue(0.0);
 		return res;
 	}
 }
