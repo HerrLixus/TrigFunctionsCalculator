@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <fstream>
+#include <iomanip>
 #include <unordered_map>
 #include <string>
 #include "ErrorHandling.h"
@@ -68,9 +69,9 @@ bool ResultPrinter::printResult(Result<T>& result)
 	if (result.isSuccess())
 	{
 		if (isConsole)
-			std::cout << result.getValue() << std::endl;
+			std::cout << std::fixed << std::setprecision(15) << result.getValue() << std::endl;
 		else
-			outputFile_ << result.getValue() << std::endl;
+			outputFile_ << std::fixed << std::setprecision(15) << result.getValue() << std::endl;
 	}
 	else
 	{
